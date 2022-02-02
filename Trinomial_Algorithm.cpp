@@ -1,14 +1,15 @@
+//std
 #include <iostream>
-#include <QApplication>
-#include <iostream>
-#include <QVector>
+#include <algorithm>
 #include <cmath>
 #include <ctime>
-#include <algorithm>
+#include <random>
+
+//QT-libraries
+#include <QApplication>
+#include <QVector>
 #include <QFile>
 #include <QDebug>
-#include <random>
-#include "bissection.h"
 
 typedef QVector<float> v1fs;
 typedef QVector<v1fs *> v2fs;
