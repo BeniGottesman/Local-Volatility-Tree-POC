@@ -85,6 +85,8 @@ using namespace std;
 
 int main()
 {
+
+//1 SIMPLE TEST//
 //        float S0 = 90.0;
 //        float vol = 0.4;
 //        float Maturity = T;
@@ -92,14 +94,18 @@ int main()
 //        float sigma_bar = 0.5;//vol*C*sqrt(C)/30.0 + r*C*sqrt_h + 0.1f;
 //        float price = LVDP_Simple_Model (S0, K, Penalty, r, sigma_bar, n, Maturity);
 //        cout << "price = " << price << endl;
+//1 SIMPLE TEST//
+
+//STOPPING REGION//
     stoppingRegion(10);
+//STOPPING REGION//
+
     return 0;
 }
 
 
 void stoppingRegion(float n_abscisse)
 {
-    //QVector<double> SR (n_abscisse+1);
     float price_Trinomial, last_price_Trinomial;
     float tmp_payoff;
     float u, S0;
@@ -109,7 +115,6 @@ void stoppingRegion(float n_abscisse)
     double elapsed_secs_Trinomial;
     float minValue, maxValue;
     float precision = 0.001f;
-    //float n_abscisse = 100;
     float dt = T/n_abscisse;
     bool intoTheRegion;
     float S0_min, S0_max;
@@ -152,7 +157,6 @@ void stoppingRegion(float n_abscisse)
             //S0 = (K-30.0f) + j*dS0;
             S0 = 60.0f + j*dS0;
 
-            //???? T-u OR u ????
             //price_Trinomial = LVDP_Trinomial_Jump_Vol(S0, T-u, 120.0);//u=maturity
             //price_Trinomial = LVDP_Trinomial (S0, T-u);//u=maturity
             price_Trinomial = LVDP_Simple_Model(S0, K, Penalty, r, sigma, n, T-u);//u=maturity
@@ -272,7 +276,6 @@ float LVDP_Simple_Model (float S0, float K, float Penalty, float r, float sigma,
     {
         sum_xi_kj = float (n-j);
         S = S0*exp(sigma*sqrt_h*(sum_xi_kj));
-        //(*J_t_plus_1) [j] = Discount_t*option(S,K);//Payoff (tmp_t, z, K);
         (*J_t_plus_1) [j] = max(0.0f, S - Discount_t*K);//Payoff (tmp_t, z, K);
     }
 
@@ -327,6 +330,7 @@ float LVDP_Trinomial_Jump_Vol (float y0, float Maturity, float S1)//T = maturity
     //float sigma = max (sigma_up, sigma_down);
     float sigma_bar= sigma*BC + r*BC*sqrt_h + .1f;
     //WORK BETTER !!!!
+    
     float tmp_sigma, tmp_mu;
     float X0 = y0;
 
@@ -339,7 +343,7 @@ float LVDP_Trinomial_Jump_Vol (float y0, float Maturity, float S1)//T = maturity
     float tmp_t = (float (n)) * h;
     float exponent;
     float Discount_t = exp (-r*tmp_t);//We calculate once because exponential is very slow
-    //float tmp_z;
+    
     float z;
     float bn = min ( (float) n, (X0-B)/(sigma_bar*sqrt_h) );
     float cn = min ( (float) n, (C-X0)/(sigma_bar*sqrt_h) );
@@ -367,43 +371,40 @@ float LVDP_Trinomial_Jump_Vol (float y0, float Maturity, float S1)//T = maturity
             z = X0 + sqrt_h*sigma_bar*(max(-bn, min(cn, sum_xi_kj)));
             tmp_f = Discount_t*option(z,K);//max ( (K - z), (float) 0.0 );// * Payoff (t, z, K);
             tmp_g = tmp_f + Discount_t*Penalty;
-
-            //            if (z <= B+0.01f || z >= C-0.01f)
-            //            {
-            //                (*J_t) [j] = tmp_g;
-            //            }
-            //            else
             {
 
-                //Bayraktar JUMP VOL : sigma//
+                //IF JUMP VOL : sigma//
                 //                if(z > S1)
                 //                    tmp_sigma = sigma_down;
                 //                else //if (z < S1)
                 //                    tmp_sigma = sigma_up;
-                //Bayraktar JUMP VOL : sigma//
+                //IF JUMP VOL : sigma//
 
-                //Dolinsky model for thesis
+                //Our model
                 tmp_sigma = z*sqrt(z)/30.0;
                 tmp_mu = z*r;
-                //Dolinsky model for thesis
+                //Our model
 
                 exponent = -2.0f*tmp_mu/tmp_sigma;
 
+                //Continuous Model uncomment//
                 //                tmp_A = A_Dolinsky(z, sqrt_h, sigma_bar, tmp_sigma);//z*z/sigma_bar*sqrt_h;
                 //                p_msh = p_Dolinsky(X0, z - sigma_bar*sqrt_h, exponent);
                 //                p_psh = p_Dolinsky(X0, z + sigma_bar*sqrt_h, exponent);
                 //                p_mA = p_Dolinsky(X0, z-tmp_A, exponent);
                 //                p_pA = p_Dolinsky(X0, z+tmp_A, exponent);
                 //                p_X0 = p_Dolinsky(X0, z, exponent);
-
-                //Jump Model
+                //Continuous Model uncomment//
+                
+                //Jump Model uncomment//
                 //                tmp_A = A_sigma_jump(z, sqrt_h, sigma_bar, tmp_sigma);//z*z/sigma_bar*sqrt_h;
                 //                p_msh = p_sigmaJump(X0, z - sigma_bar*sqrt_h, exponent);
                 //                p_psh = p_sigmaJump(X0, z + sigma_bar*sqrt_h, exponent);
                 //                p_mA = p_sigmaJump(X0, z-tmp_A, exponent);
                 //                p_pA = p_sigmaJump(X0, z+tmp_A, exponent);
                 //                p_X0 = p_sigmaJump(X0, z, exponent);
-
+                //Jump Model uncomment//
+                
                 //Probabilities
                 q_p1 = (p_X0-p_mA)*(p_pA-p_X0) / ( (p_pA-p_mA)*(p_psh-p_X0) );
                 q_m1 = (p_pA-p_X0)*(p_X0-p_mA) / ( (p_pA-p_mA)*(p_X0-p_msh) );
@@ -413,9 +414,9 @@ float LVDP_Trinomial_Jump_Vol (float y0, float Maturity, float S1)//T = maturity
                 tmp_dp = q_p1*(*J_t_plus_1)[j] +
                         q_0*(*J_t_plus_1)[j+1] +
                         q_m1*(*J_t_plus_1)[j+2];
-                (*J_t) [j] = min (tmp_g, max (tmp_f, tmp_dp));//Israeli
-                //(*J_t) [j] = max (tmp_f, min (tmp_g, tmp_dp));//Israeli
-                //(*J_t) [j] = max (tmp_f, tmp_dp);//American
+                (*J_t) [j] = min (tmp_g, max (tmp_f, tmp_dp));//Game Option
+                //(*J_t) [j] = max (tmp_f, min (tmp_g, tmp_dp));//Game Option
+                //(*J_t) [j] = max (tmp_f, tmp_dp);//American Option
             }
         }
         delete J_t_plus_1;
@@ -512,7 +513,7 @@ inline float sigma_AB (float z)
 inline float Payoff (float t, float z, float K)
 {
     if (K - z > 0.0)
-        return /*exp(-r*(t))**/(K - z);//exponential is very slow
+        return /*exp(-r*(t))**/(K - z);// but exponential is very slow to compute each time
     return 0.0;
 }
 
