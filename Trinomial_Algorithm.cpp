@@ -148,21 +148,15 @@ void stoppingRegion(float n_abscisse)
         S0_min = S0_max = 0.0;
         //reinitialization of the values
 
-        //        if (i%5==0)
-        cout << i << endl;
+        //cout << i << endl;
 
         for (int j = 0; j <= m_S0; j++)
         {
-            //            S0 = B + j*dS0;//Ordinate
-            //S0 = (K-30.0f) + j*dS0;
             S0 = 60.0f + j*dS0;
 
-            //price_Trinomial = LVDP_Trinomial_Jump_Vol(S0, T-u, 120.0);//u=maturity
-            //price_Trinomial = LVDP_Trinomial (S0, T-u);//u=maturity
             price_Trinomial = LVDP_Simple_Model(S0, K, Penalty, r, sigma, n, T-u);//u=maturity
             tmp_payoff = option(S0,K)+Penalty;//max (K-S0, (float) 0.0) + Penalty;
 
-            //            if (price_Trinomial == tmp_payoff)
             if (fabs(price_Trinomial-tmp_payoff) < precision)
             {
                 if (!intoTheRegion)//We enter the Stopping Region
@@ -182,8 +176,8 @@ void stoppingRegion(float n_abscisse)
                 SR_up += ",";
                 intoTheRegion = false;
 
-                //!!! TO accelerate
-                break;//to delete ???
+                //!!! accelerate the simulation
+                break;
                 //!!!!
             }
             S0_max = S0;
