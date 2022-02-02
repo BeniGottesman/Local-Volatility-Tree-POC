@@ -426,12 +426,12 @@ float LVDP_Trinomial_Jump_Vol (float y0, float Maturity, float S1)//T = maturity
     return price;
 }
 
-inline float A_Dolinsky (float x, float sqrt_h, float sigma_bar, float sigma)
+inline float A_Dly (float x, float sqrt_h, float sigma_bar, float sigma)
 {
     return x*x*sigma*sigma/sigma_bar * sqrt_h;
 }
 
-inline float p_Dolinsky (float X0, float y, float K)
+inline float p_Dly (float X0, float y, float K)
 {
     return 0.0;//x*x*sigma*sigma/sigma_bar * sqrt_h;
 }
