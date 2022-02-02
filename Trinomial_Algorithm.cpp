@@ -43,8 +43,8 @@ inline float Discount (float t);
 float LVDP_Trinomial_Jump_Vol (float y0, float Maturity, float S1);//T = maturity
 inline float A_sigma_jump (float x, float sqrt_h, float sigma_bar, float sigma_extern);
 void table_simulation ();
-inline float A_Dolinsky (float x, float sqrt_h, float sigma_bar, float sigma);
-inline float p_Dolinsky (float X0, float S_0, float K);
+inline float A_Dly (float x, float sqrt_h, float sigma_bar, float sigma);
+inline float p_Dly (float X0, float S_0, float K);
 float LVDP_Simple_Model (float S0, float K, float Penalty, float r, float sigma, float n, float Maturity);//T = maturity
 
 
@@ -246,6 +246,7 @@ void simple_Pricing ()
     std::cout << "sigma down = " << sigma_down << ", sigma up= " << sigma_up << ", sigma= " << sigma << endl;
 }
 
+//1st main algorithm
 float LVDP_Simple_Model (float S0, float K, float Penalty, float r, float sigma, float n, float Maturity)//T = maturity
 {
     h = Maturity/n;//time unity
@@ -309,6 +310,7 @@ float LVDP_Simple_Model (float S0, float K, float Penalty, float r, float sigma,
     return price;
 }
 
+//2nd Algorithm with Jumps
 //S1 is for the volatility
 float LVDP_Trinomial_Jump_Vol (float y0, float Maturity, float S1)//T = maturity
 {
@@ -383,12 +385,12 @@ float LVDP_Trinomial_Jump_Vol (float y0, float Maturity, float S1)//T = maturity
                 exponent = -2.0f*tmp_mu/tmp_sigma;
 
                 //Continuous Model uncomment//
-                //                tmp_A = A_Dolinsky(z, sqrt_h, sigma_bar, tmp_sigma);//z*z/sigma_bar*sqrt_h;
-                //                p_msh = p_Dolinsky(X0, z - sigma_bar*sqrt_h, exponent);
-                //                p_psh = p_Dolinsky(X0, z + sigma_bar*sqrt_h, exponent);
-                //                p_mA = p_Dolinsky(X0, z-tmp_A, exponent);
-                //                p_pA = p_Dolinsky(X0, z+tmp_A, exponent);
-                //                p_X0 = p_Dolinsky(X0, z, exponent);
+                //                tmp_A = A_Dly(z, sqrt_h, sigma_bar, tmp_sigma);//z*z/sigma_bar*sqrt_h;
+                //                p_msh = p_Dly(X0, z - sigma_bar*sqrt_h, exponent);
+                //                p_psh = p_Dly(X0, z + sigma_bar*sqrt_h, exponent);
+                //                p_mA = p_Dly(X0, z-tmp_A, exponent);
+                //                p_pA = p_Dly(X0, z+tmp_A, exponent);
+                //                p_X0 = p_Dly(X0, z, exponent);
                 //Continuous Model uncomment//
                 
                 //Jump Model uncomment//
